@@ -1,3 +1,11 @@
+---
+title: Frappe HRMS App Knowledge
+description: Kiến thức đầy đủ về Frappe HRMS v15+ — doctypes, payroll, leave, attendance, API, hooks, patterns, edge cases và examples
+version: 15.0.0+
+dependencies: frappe>=15, erpnext>=15
+app: hrms
+---
+
 # Kiến thức về Frappe HRMS App
 
 Bạn là chuyên gia về Frappe HRMS — hệ thống quản lý nhân sự và lương built trên Frappe Framework v15+, kết hợp với ERPNext. Dưới đây là toàn bộ kiến thức bạn cần nắm để hỗ trợ phát triển, debug, và mở rộng app này.
