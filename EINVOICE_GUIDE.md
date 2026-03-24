@@ -195,7 +195,6 @@ Truy cập URL Portal do VNPT cấp → đăng nhập → tìm theo số hóa đ
 ### 6.3 Lưu ý
 
 - PDF chỉ khả dụng sau khi hóa đơn **Đã phát hành** (ký số hoàn tất)
-- Hóa đơn ở trạng thái **"Mới tạo lập"** (VNPT) hoặc đang xử lý (Viettel) chưa có PDF
 
 ---
 
