@@ -474,3 +474,148 @@ balance = get_leave_balance_on(
     leave_type="Casual Leave"
 )
 ```
+
+---
+
+## ✅ Verification Checklist
+
+Dùng để kiểm tra sau khi cài đặt hoặc sau migrate:
+
+- [ ] **Leave Application submit** → tạo `Leave Ledger Entry` với transaction_type = "Leave Application", giảm số dư phép
+- [ ] **Attendance tự tạo từ Employee Checkin** → sau khi có checkin log, chạy `Shift Type.process_auto_attendance()` hoặc đợi hourly scheduler, kiểm tra record `Attendance` được tạo với đúng status
+- [ ] **Salary Slip tính đúng** → `total_earnings - total_deduction = net_pay`, kiểm tra field `gross_pay`, `total_deduction`, `net_pay` trên slip sau khi `calculate_net_pay()`
+- [ ] **Expense Claim tạo GL Entries khi submit** → sau submit, vào GL Entry kiểm tra có 2 entries: debit `Expense Account`, credit `Expense Claim Payable Account`
+
+---
+
+## ⚠️ Edge Cases
+
+### Leave Application
+- **Trùng ngày**: Nếu submit 2 Leave Application cùng employee, cùng khoảng ngày → `validate_leave_overlap()` raise `OverlapError`. Phải cancel cái cũ trước.
+- **Ngày là holiday**: Leave Application trên ngày holiday vẫn cho phép tạo nhưng không tính vào số ngày phép trừ (hệ thống tự bỏ qua holiday).
+- **Leave type có `is_lwp=True`**: Không cần kiểm tra số dư, nhưng tự động trừ lương khi tính Salary Slip.
+- **Salary đã xử lý**: Nếu Salary Slip của kỳ đó đã submit → không cho phép submit Leave Application trùng kỳ đó.
+
+### Attendance & Checkin
+- **Checkin không thuộc ca nào**: Nếu Employee không có Shift Assignment và Shift Type không set `determine_check_in_and_check_out` → checkin bị bỏ qua, không tạo Attendance.
+- **Check-in thiếu check-out**: Nếu chỉ có check-in mà không có check-out trước khi `process_auto_attendance()` chạy → Attendance có thể tạo với status `Absent` hoặc bị bỏ qua tùy cấu hình `working_hours_threshold_for_half_day`.
+- **Duplicate Attendance**: Nếu đã có Attendance thủ công cho ngày đó → `validate_duplicate_record()` raise lỗi khi auto-attendance cố tạo thêm.
+
+### Salary Slip
+- **Đã submit không sửa được**: Salary Slip sau khi submit là locked. Phải cancel → amend → submit lại. Amend tạo bản mới với amended_from link.
+- **Component formula lỗi**: Nếu công thức Salary Component có lỗi Python syntax → `calculate_components()` raise exception, toàn bộ slip không tính được. Kiểm tra bằng cách test formula trực tiếp trong Salary Component.
+- **Không có Salary Structure Assignment**: Nếu employee chưa có assignment hợp lệ cho kỳ lương đó → Payroll Entry bỏ qua employee này, không báo lỗi rõ ràng.
+- **Additional Salary trùng kỳ**: Nếu có nhiều Additional Salary cho cùng employee, cùng component, cùng tháng → tất cả đều được cộng vào, không deduplicate.
+
+### Expense Claim
+- **Approval status khác submitted status**: `approval_status` (Approved/Rejected) độc lập với `docstatus` (0/1/2). Phải set `approval_status = "Approved"` trước khi submit mới tạo được GL entries.
+- **Tài khoản chưa cấu hình**: Nếu Company chưa set `default_expense_claim_payable_account` → GL entry creation lỗi khi submit.
+
+---
+
+## 📝 Examples
+
+### Tạo Leave Application
+
+```python
+import frappe
+
+# Tạo và submit leave application
+doc = frappe.get_doc({
+    "doctype": "Leave Application",
+    "employee": "HR-EMP-001",
+    "leave_type": "Casual Leave",
+    "from_date": "2026-03-25",
+    "to_date": "2026-03-26",
+    "half_day": 0,
+    "description": "Personal work",
+    "status": "Open",
+})
+doc.insert()
+doc.submit()
+# → tự động tạo Leave Ledger Entry, cập nhật Attendance
+```
+
+### Tạo Expense Claim
+
+```python
+doc = frappe.get_doc({
+    "doctype": "Expense Claim",
+    "employee": "HR-EMP-001",
+    "company": "My Company",
+    "expense_approver": "approver@example.com",
+    "expenses": [
+        {
+            "expense_date": "2026-03-20",
+            "expense_claim_type": "Travel",
+            "description": "Taxi to client",
+            "amount": 150000,
+            "sanctioned_amount": 150000,
+        }
+    ],
+    "approval_status": "Approved",
+})
+doc.insert()
+doc.submit()
+# → tạo GL Entries: debit Travel Expense, credit Expense Payable
+```
+
+### Tạo Salary Slip thủ công
+
+```python
+ss = frappe.new_doc("Salary Slip")
+ss.employee = "HR-EMP-001"
+ss.start_date = "2026-03-01"
+ss.end_date = "2026-03-31"
+ss.get_emp_and_working_day_details()   # load salary structure, working days
+ss.calculate_net_pay()                 # tính tất cả components
+ss.save()
+# Kiểm tra: ss.gross_pay, ss.total_deduction, ss.net_pay
+```
+
+### Kiểm tra số dư phép
+
+```python
+from hrms.hr.doctype.leave_application.leave_application import get_leave_balance_on
+
+balance = get_leave_balance_on(
+    employee="HR-EMP-001",
+    date="2026-03-25",
+    leave_type="Casual Leave",
+)
+print(f"Còn lại: {balance} ngày")
+```
+
+### Tạo Attendance Request thủ công
+
+```python
+doc = frappe.get_doc({
+    "doctype": "Attendance Request",
+    "employee": "HR-EMP-001",
+    "from_date": "2026-03-20",
+    "to_date": "2026-03-20",
+    "reason": "Forgot to check in",
+    "half_day": 0,
+})
+doc.insert()
+doc.submit()
+```
+
+### Query Leave Ledger Entry
+
+```python
+from frappe.query_builder import DocType
+
+LLE = DocType("Leave Ledger Entry")
+entries = (
+    frappe.qb.from_(LLE)
+    .select(LLE.transaction_date, LLE.leaves, LLE.transaction_type)
+    .where(
+        (LLE.employee == "HR-EMP-001")
+        & (LLE.leave_type == "Casual Leave")
+        & (LLE.is_expired == 0)
+    )
+    .orderby(LLE.transaction_date)
+    .run(as_dict=True)
+)
+```
