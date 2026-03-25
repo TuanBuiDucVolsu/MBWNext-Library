@@ -1,129 +1,136 @@
-# Huong dan su dung MISA eInvoice (ERPNext)
+# Hướng dẫn sử dụng MISA eInvoice (ERPNext)
 
-Tai lieu nay huong dan cau hinh va su dung MISA MeInvoice trong app `mbwnext_einvoice`.
+Tài liệu này hướng dẫn cấu hình và sử dụng MISA MeInvoice trong app `mbwnext_einvoice`.
 
-## 1) Dieu kien truoc khi cau hinh
+## 1) Điều kiện trước khi cấu hình
 
-- Da cai app `mbwnext_einvoice`.
-- Da co tai khoan MISA MeInvoice (sandbox hoac production).
-- Da duoc MISA cap bo thong tin API:
+- Đã cài app `mbwnext_einvoice`.
+- Đã có tài khoản MISA MeInvoice (sandbox hoặc production).
+- Đã được MISA cấp bộ thông tin API:
   - `AppID`
   - `Tax Code`
   - `Username`
   - `Password`
-- Da tao va kich hoat mau hoa don tren portal MISA (trang thai `Su dung`).
+- Đã tạo và kích hoạt mẫu hóa đơn trên portal MISA (trạng thái `Sử dụng`).
 
-## 2) Cau hinh Company > E-Invoice Settings
+## 2) Cấu hình `Company` > `E-Invoice Settings`
 
-Vao `Company` > tab `E-Invoice Settings` va cau hinh:
+Vào `Company` > tab `E-Invoice Settings` và cấu hình:
 
-- `Use E-Invoice`: bat.
-- `E-Invoice Provider`: chon `MISA`.
-- `Tax Code (MST)`: ma so thue don vi.
+- `Use E-Invoice`: bật.
+- `E-Invoice Provider`: chọn `MISA`.
+- `Tax Code (MST)`: mã số thuế đơn vị.
 - `API URL`:
   - Sandbox: `https://testapi.meinvoice.vn/api/integration`
   - Production: `https://api.meinvoice.vn/api/integration`
-- `Username`, `Password`: thong tin dang nhap MISA.
-- `Invoice Serial`: vi du `1C26TNP` hoac `1C26MTM`.
-- `MISA AppID`: AppID duoc MISA cap.
+- `Username`, `Password`: thông tin đăng nhập MISA.
+- `Invoice Serial`: ví dụ `1C26TNP` hoặc `1C26MTM`.
+- `MISA AppID`: AppID do MISA cấp.
 - `Signing Method (SignType)`:
-  - `2`: HSM co chu ky so hien thi (can Certificate SN)
-  - `5`: khong ky (thuong dung cho hoa don MTT/POS)
+  - `2`: ký số HSM có hiển thị CKS (cần `Certificate SN`)
+  - `5`: không ký số (thường dùng cho hóa đơn MTT/POS)
 - `Digital Certificate SN`:
-  - chi can khi `SignType = 2` hoac `3`
-  - bam nut `Get MISA Certificates` de lay va dien nhanh.
-- `Invoice With Tax Authority Code`: tick neu la hoa don co ma CQT (ky tu thu 2 cua ky hieu la `C`).
+  - chỉ cần khi `SignType = 2` hoặc `3`
+  - bấm nút `Get MISA Certificates` để lấy và điền nhanh.
+- `Invoice With Tax Authority Code`: tích nếu là hóa đơn có mã CQT (ký tự thứ 2 của ký hiệu là `C`).
 
-## 3) Test ket noi MISA
+## 3) Test kết nối MISA
 
-Tai `Company`:
+Tại `Company`:
 
-- Bam `E-Invoice` > `Test MISA Connection`.
-- Neu thanh cong, he thong hien:
+- Bấm `E-Invoice` > `Test MISA Connection`.
+- Nếu thành công, hệ thống hiển thị:
   - Provider
   - Base URL
   - Tax Code
-  - So luong template tim thay
+  - Số lượng template tìm thấy
 
-Neu loi `UnAuthorize` / `MisaIdError`:
-- Kiem tra lai `AppID`, `Tax Code`, `Username`, `Password` co dung cung 1 moi truong khong.
+Nếu gặp lỗi `UnAuthorize` / `MisaIdError`:
 
-## 4) Phat hanh hoa don tu Sales Invoice
+- Kiểm tra lại `AppID`, `Tax Code`, `Username`, `Password` có đúng và cùng một môi trường (sandbox hoặc production) không.
 
-Tai `Sales Invoice` da submit:
+## 4) Phát hành hóa đơn từ `Sales Invoice`
 
-- Bam `E-Invoice` > `Create MISA E-Invoice`.
-- Neu thanh cong:
-  - `Created Einvoice` = checked
-  - Luu `E-Invoice No`
-  - Luu `Transaction ID` vao `einvoice_uuid`
+Tại `Sales Invoice` đã submit:
 
-## 5) Xem PDF hoa don
+- Bấm `E-Invoice` > `Create MISA E-Invoice`.
+- Nếu thành công:
+  - `Created Einvoice` được đánh dấu
+  - Lưu `E-Invoice No`
+  - Lưu `Transaction ID` vào `einvoice_uuid`
 
-Tai tab `E-Invoice Info` tren `Sales Invoice`:
+## 5) Xem PDF hóa đơn
 
-- Neu MISA tra ve du lieu PDF base64: xem truc tiep trong ERPNext.
-- Neu MISA chi tra ve link: he thong hien nut `Open E-Invoice PDF on portal`.
+Trên tab `E-Invoice Info` của `Sales Invoice`:
 
-Luu y: mot so thoi diem MISA co the tra ve link portal/download thay vi base64, day la hanh vi binh thuong.
+- Nếu MISA trả `pdf_base64`: xem trực tiếp trong ERPNext.
+- Nếu MISA chỉ trả link: hệ thống hiển thị nút `Open E-Invoice PDF on portal`.
 
-## 6) Quy tac ky hieu hoa don va SignType
+Lưu ý: có thể MISA trả link portal/download thay vì base64 PDF. Đây là hành vi bình thường.
+
+## 6) Quy tắc ký hiệu hóa đơn và SignType
 
 Theo MISA:
 
-- Ky tu thu 2 cua ky hieu:
-  - `C`: hoa don co ma CQT
-  - `K`: hoa don khong ma
-- Ky tu thu 5 cua ky hieu:
-  - `T`: hoa don thuong
-  - `M`: hoa don tu may tinh tien (MTT/POS)
+- Ký tự thứ 2 của ký hiệu:
+  - `C`: hóa đơn có mã CQT
+  - `K`: hóa đơn không mã
+- Ký tự thứ 5 của ký hiệu:
+  - `T`: hóa đơn thường
+  - `M`: hóa đơn từ máy tính tiền (MTT/POS)
 
-Mapping khuyen nghi:
+Mapping khuyến nghị:
 
-- `...T...` (hoa don thuong) -> `SignType = 2` + `Certificate SN`
-- `...M...` (hoa don MTT) -> `SignType = 5`
+- `...T...` (hóa đơn thường) -> `SignType = 2` + nhập `Certificate SN`
+- `...M...` (hóa đơn MTT) -> `SignType = 5` (không cần Certificate SN)
 
-## 7) Luu y ve nam trong ky hieu
+## 7) Lưu ý về năm trong ký hiệu
 
-MISA co the tu dong chuan hoa nam trong ky hieu theo ngay hoa don (`InvDate`).
+MISA có thể tự động chuẩn hóa phần năm trong ký hiệu theo ngày hóa đơn (`InvDate`).
 
-Vi du:
-- Gui `1C25TNP` cho hoa don nam 2026
-- MISA co the luu thanh `1C26TNP`
+Ví dụ:
 
-Day la hanh vi dung theo nghiep vu MISA.
+- Gửi `1C25TNP` cho hóa đơn năm 2026
+- MISA có thể lưu/chuẩn hóa thành `1C26TNP`
 
-## 8) Loi thuong gap va cach xu ly
+Đây là hành vi đúng theo nghiệp vụ MISA.
+
+## 8) Lỗi thường gặp và cách xử lý
 
 ### `APINotSupportTypeInvoice`
-- Nguyen nhan: `SignType` khong phu hop loai ky hieu.
-- Cach xu ly:
-  - Ky hieu `...T...` -> dung `SignType = 2`
-  - Ky hieu `...M...` -> dung `SignType = 5`
+
+- Nguyên nhân: `SignType` không phù hợp loại ký hiệu.
+- Cách xử lý:
+  - Ký hiệu `...T...` -> dùng `SignType = 2`
+  - Ký hiệu `...M...` -> dùng `SignType = 5`
 
 ### `TemplateIsNotUsing`
-- Nguyen nhan: mau hoa don tren MISA chua o trang thai `Su dung`.
-- Cach xu ly: vao portal MISA, kich hoat mau hoa don.
+
+- Nguyên nhân: mẫu hóa đơn trên MISA chưa ở trạng thái `Sử dụng`.
+- Cách xử lý: vào portal MISA và kích hoạt (bắt đầu sử dụng) mẫu hóa đơn.
 
 ### `InvalidAppID` / `MisaIdError`
-- Nguyen nhan: AppID sai hoac khong khop bo thong tin sandbox/product.
-- Cach xu ly: lien he MISA lay lai bo thong tin API dung.
 
-### Khong xem duoc PDF tren portal (timeout)
-- Thu mo lai sau it phut.
-- Kiem tra dung moi truong (sandbox/product).
-- Dung tra cuu tren trang quan ly MISA bang `Invoice No` hoac `Transaction ID`.
+- Nguyên nhân: AppID sai hoặc không khớp bộ thông tin sandbox/production.
+- Cách xử lý: liên hệ MISA để lấy lại đúng bộ thông tin API và cập nhật vào `Company`.
 
-## 9) Checklist cau hinh nhanh
+### Không xem được PDF trên portal (timeout/Cloudflare)
+
+- Thử mở lại sau vài phút.
+- Kiểm tra đúng môi trường (sandbox/production).
+- Dùng tra cứu trên trang quản lý MISA bằng `Invoice No` hoặc `Transaction ID`.
+
+## 9) Checklist cấu hình nhanh
 
 - [ ] Provider = `MISA`
-- [ ] API URL dung moi truong
-- [ ] AppID/TaxCode/Username/Password dung
-- [ ] Invoice Serial dung loai (`T` hoac `M`)
-- [ ] SignType phu hop voi ky hieu
-- [ ] Mau hoa don tren MISA dang `Su dung`
-- [ ] (Neu SignType=2) da chon `Digital Certificate SN`
+- [ ] API URL đúng môi trường
+- [ ] AppID/TaxCode/Username/Password đúng
+- [ ] `Invoice Serial` đúng loại (`T` hoặc `M`)
+- [ ] `SignType` phù hợp với ký hiệu
+- [ ] Mẫu hóa đơn trên MISA đang `Sử dụng`
+- [ ] (Nếu `SignType = 2`) đã chọn `Digital Certificate SN`
 
 ---
 
-Neu can, co the bo sung them SOP van hanh (quy trinh doi serial theo nam, retry khi loi, va doi soat MISA-ERP cuoi ngay).
+Nếu cần, có thể bổ sung SOP vận hành (đổi serial theo năm, retry khi lỗi, và đối soát MISA-ERP cuối ngày).
+
