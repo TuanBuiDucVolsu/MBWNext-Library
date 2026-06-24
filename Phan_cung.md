@@ -6,16 +6,16 @@
 ┌─────────────────────────────────────────────────────────────┐
 │                    RASPBERRY PI 4                           │
 │                                                             │
-│  SPI bus ──→ MCP3008 (ADC 10-bit, 8 kênh)                  │
-│              ├── CH0-CH5: QTR-8A dò line (6 mắt)           │
+│  SPI bus ──→ MCP3008 (ADC 10-bit, 8 kênh)                   │
+│              ├── CH0-CH5: QTR-8A dò line (6 mắt)            │
 │              ├── CH6: IR pallet trái                        │
 │              └── CH7: IR pallet phải                        │
 │                                                             │
-│  GPIO ──→ L298N #1 ──→ 2 motor bánh xe                     │
-│  GPIO ──→ L298N #2 ──→ 2 motor cẩu (trái/phải độc lập)    │
-│  GPIO ──→ HC-SR04  ──→ Đo khoảng cách phía trước           │
-│  GPIO ──→ Nút bấm ──→ Khởi động robot                      │
-│  CSI  ──→ Camera   ──→ Nhận diện kiện hàng                 │
+│  GPIO ──→ L298N #1 ──→ 2 motor bánh xe                      │
+│  GPIO ──→ L298N #2 ──→ 2 motor cẩu (trái/phải độc lập)      │
+│  GPIO ──→ HC-SR04  ──→ Đo khoảng cách phía trước            │
+│  GPIO ──→ Nút bấm ──→ Khởi động robot                       │
+│  CSI  ──→ Camera   ──→ Nhận diện kiện hàng                  │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -304,18 +304,18 @@ Nhìn từ trên xuống:
         [HC-SR04] →      ← Giữa 2 càng, hướng ra trước
      ══════════════════  ← Càng phải + [IR phải trên mặt càng]
 
-     ┌──────────────────┐
-     │  [Camera]  →     │  ← Giữa thân, hướng ra trước
-     │   RPi 4          │
-     │  [MCP3008]       │  ← Trên breadboard
-     │  [L298N #1]      │
-     │  [L298N #2]      │
-     │  [NÚT BẤM] ●    │  ← Mặt trên, dễ bấm
-     │  [QTR-8A] ↓↓↓↓↓↓│  ← Dưới gầm, sát sàn 3-5mm
-     ├──────────────────┤
+     ┌───────────────────┐
+     │  [Camera]  →      │  ← Giữa thân, hướng ra trước
+     │   RPi 4           │
+     │  [MCP3008]        │  ← Trên breadboard
+     │  [L298N #1]       │
+     │  [L298N #2]       │
+     │  [NÚT BẤM] ●      │  ← Mặt trên, dễ bấm
+     │  [QTR-8A] ↓↓↓↓↓↓  │  ← Dưới gầm, sát sàn 3-5mm
+     ├───────────────────┤
      │ (motor T)(motor P)│  ← Bánh sau chủ động
      │  (caster)(caster) │  ← Bánh trước đa hướng
-     └──────────────────┘
+     └───────────────────┘
 ```
 
 ---
