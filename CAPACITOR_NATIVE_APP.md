@@ -250,3 +250,35 @@ npx @capacitor/assets generate --android
 npx cap sync android
 ```
 rồi build lại release (mục 9.5).
+
+## 10. Sửa code production: backend vs frontend — hệ quả khác nhau
+
+Vì kiến trúc là **full native bundle** (mục kiến trúc ở đầu file), server production và app đã cài trên máy khách là 2 thứ **tách biệt hoàn toàn** về mặt phân phối code. Tuỳ code sửa ở đâu mà quy trình cập nhật khác hẳn nhau:
+
+### 10.1. Sửa backend Python (`pos_next/api/...`, doctype, hooks, `overrides/`...)
+App native gọi các phần này qua API/network, không có gì nhúng cứng trong bundle — **không cần build lại app**. Chỉ cần deploy code lên server production như một app Frappe bình thường:
+```bash
+# trên server production
+git pull                          # nhánh vnpost/ha_vang
+bench build --app pos_next        # rebuild static assets (cho bản web, không ảnh hưởng app native)
+bench migrate                     # nếu có thay đổi doctype/fixtures
+# restart theo cơ chế server đang dùng (supervisor/systemd)
+```
+App khách gọi API lần tiếp theo sẽ thấy ngay code mới, không cần làm gì trên điện thoại.
+
+### 10.2. Sửa frontend Vue (`POS/src/...`)
+Toàn bộ Vue app được build cứng vào file cài đặt lúc `yarn build:capacitor` — sửa server **không** có tác dụng gì với app khách đã cài. Bắt buộc phải phát hành **bản app mới**:
+```bash
+cd POS
+yarn build:capacitor && npx cap sync android
+cd android
+./gradlew :app:bundleRelease   # ký bằng keystore release, xem mục 9.3–9.5
+```
+rồi phân phối cho khách qua Google Play (upload `.aab`, tăng `versionCode`, mục 9.2) hoặc gửi APK release để khách tự cài đè thủ công nếu chưa lên Store — **không** dùng `adb install` vì đó là máy khách, không cắm dây với máy dev.
+
+### 10.3. Tóm tắt
+
+| Sửa ở đâu | Cần build lại app? | Khách cần làm gì? |
+|---|---|---|
+| Backend Python/API/doctype | Không | Không — tự động thấy code mới |
+| Frontend Vue (`POS/src`) | Có — bản release mới | Cập nhật app (Play Store hoặc cài APK mới) |
