@@ -4,6 +4,8 @@ Hướng dẫn build/chạy/test bản native (iOS/Android) của POS Next, đó
 
 Kiến trúc: **full native bundle** — toàn bộ Vue app được build cục bộ vào app (không load từ URL remote), nên app luôn mở được kể cả mất mạng hoàn toàn khi khởi động. Chi tiết thiết kế/lý do xem trong lịch sử trao đổi hoặc hỏi lại khi cần; file này chỉ tập trung vào **cách chạy**.
 
+> **Nhánh làm việc:** toàn bộ code Capacitor (native app) nằm trên nhánh **`vnpost`** của repo `MBW-Digital/mbwnext-pos` — không phải `develop` hay `ha_vang`.
+
 ## 1. Yêu cầu môi trường
 
 - Node/yarn như frontend web bình thường (`POS/package.json`)
