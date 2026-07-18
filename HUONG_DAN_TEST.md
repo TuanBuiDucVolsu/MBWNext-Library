@@ -254,17 +254,3 @@ bash scripts/practice.sh
 ```
 
 ---
-
-## Khi nào cần gọi người phụ trách
-
-- Bất kỳ test nào hiện `❌` hoặc `FAILED` **2 lần liên tiếp** sau khi thử lại.
-- Cần sửa `config.py`/`main.py` nhưng chưa từng đọc code robot trước đó.
-- Robot có hành vi bất thường không khớp mô tả trong bảng trên (ví dụ: khói, mùi khét,
-  tiếng động cơ bất thường) → **rút nguồn ngay**, không cố chạy tiếp.
-
-## Xem thêm
-
-- [DEBUG_CAM_BIEN_LINE.md](../tests/DEBUG_CAM_BIEN_LINE.md) — cảm biến line đọc sai/ngược
-- [DEBUG_DONG_CO.md](../tests/DEBUG_DONG_CO.md) — bánh xe chạy ngược/không dừng/lệch
-- [TEST_CASE.md](../tests/TEST_CASE.md) — bảng đầy đủ mọi option test (bản kỹ thuật, dành cho người đã quen code)
-- [SETUP_PI.md](SETUP_PI.md) — cài đặt Pi từ đầu
