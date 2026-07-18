@@ -41,7 +41,7 @@ Thấy dòng đại loại `pi@raspberrypi:~ $` là đã **vào được Pi thà
 |---|---|
 | `cd ~/Robocon-BCIT` | Di chuyển vào thư mục code robot |
 | `ls` | Xem có những file/thư mục gì trong thư mục hiện tại |
-| `source ~/robot_env/bin/activate` | Bật "môi trường Python" của robot (bắt buộc trước khi chạy test — dòng lệnh sẽ hiện thêm `(robot_env)` phía trước) |
+| `source ~/Robocon-BCIT/.venv/bin/activate` | Bật "môi trường Python" của robot (bắt buộc trước khi chạy test — dòng lệnh sẽ hiện thêm `(robot_env)` phía trước) |
 | `python3 tests/test_xxx.py` | Chạy 1 bài test |
 | `Ctrl + C` | **Dừng khẩn cấp** bài test đang chạy (giữ Ctrl, bấm C) |
 
@@ -49,7 +49,7 @@ Thấy dòng đại loại `pi@raspberrypi:~ $` là đã **vào được Pi thà
 
 ```bash
 cd ~/Robocon-BCIT
-source ~/robot_env/bin/activate
+source ~/Robocon-BCIT/.venv/bin/activate
 ```
 
 Nếu thấy `(robot_env)` xuất hiện ở đầu dòng lệnh → sẵn sàng chạy test.
@@ -87,7 +87,7 @@ không động vào motor/cảm biến thật.
 
 ```bash
 cd ~/Robocon-BCIT
-source ~/robot_env/bin/activate
+source ~/Robocon-BCIT/.venv/bin/activate
 python3 -m unittest tests.test_logic -v
 ```
 
