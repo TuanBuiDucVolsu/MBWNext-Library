@@ -3,10 +3,6 @@
 Tài liệu này dành cho sinh viên **chưa từng dùng terminal/dòng lệnh**, muốn tự kiểm tra
 robot hoạt động đúng chưa — không cần hiểu code, chỉ cần làm theo từng bước.
 
-> **Điều kiện trước khi đọc tài liệu này:** Pi đã được cài đặt xong theo
-> [SETUP_PI.md](SETUP_PI.md) (đã clone code, cài thư viện, đấu nối phần cứng).
-> Nếu chưa, nhờ người phụ trách cài trước hoặc làm theo tài liệu đó trước.
-
 ---
 
 ## 0. Làm quen terminal (3 phút)
