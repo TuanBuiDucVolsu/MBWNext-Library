@@ -14,8 +14,6 @@ từ xa qua WiFi (gọi là **SSH**) — không cần cắm màn hình vào Pi.
 
 | Hệ điều hành | Cách mở |
 |---|---|
-| Windows | Mở **PowerShell** (bấm Start, gõ "powershell") |
-| Mac | Mở **Terminal** (Spotlight, gõ "terminal") |
 | Linux | Mở **Terminal** |
 
 ### Kết nối vào Pi
