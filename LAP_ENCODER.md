@@ -101,7 +101,3 @@ khoảng vài trăm đến hơn 1000 xung/giây mỗi bánh tuỳ tốc độ. H
   được vì option **f** chỉ so **tỉ lệ** trái/phải (2 bên rớt tương đương), không
   cần số tuyệt đối. Chỉ khi nào cần đo quãng đường thật (odometry) mới bắt buộc
   chuyển sang `pigpio`.
-
-> Số xung/vòng chính xác = **PPR × tỉ số hộp số**. Hỏi shop 2 thông số này nếu
-> sau này cần đổi xung → quãng đường (mm). Hiện code **không** cần: điều hướng
-> dựa vào bám line + đếm giao lộ, không dùng odometry.
